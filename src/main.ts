@@ -86,7 +86,7 @@ const killMurder = () => {
       }
     }
   });
-};
+}
 
 const killSheriff = () => {
   const tol = 100;
@@ -113,15 +113,11 @@ const killSheriff = () => {
       }
     }
   });
-};
+}
 
 const grabTouching = () => {
   WA.event.on("murder").subscribe(() => {
     WA.player.getPosition().then((pos) => {
-      // save position tombstone in variable
-      const indexTomb = WA.state.loadVariable("tombstone") as saveTombstone[];
-      indexTomb.push({ x: pos.x, y: pos.y });
-      WA.state.saveVariable("tombstone", indexTomb);
       // send event put tomb stone
       WA.event.broadcast("puttombstone", { x: pos.x, y: pos.y });
       WA.player.teleport(100, 100);
@@ -133,15 +129,13 @@ const grabTouching = () => {
     } else {
       // @ts-ignore
       let error = WA.players.get(event.data);
-      error?.sendEvent("error", true);
+      error?.sendEvent("error", true); 
     }
   });
 };
 
 const deleteTombstone = () => {
-  const posTombs = WA.state.loadVariable("tombstone") as saveTombstone[];
-  console.log(posTombs);
-
+  const posTombs = WA.state.tombstone as saveTombstone[];
   posTombs.forEach((tomb) => {
     WA.room.setTiles([
       {
@@ -152,6 +146,7 @@ const deleteTombstone = () => {
       },
     ]);
   });
+  WA.state.saveVariable("tombstone", [])
 };
 
 const attributRole = async () => {
@@ -164,7 +159,12 @@ const attributRole = async () => {
 
 const putTombstone = () => {
   WA.event.on("puttombstone").subscribe((e) => {
-    makeTombstone(e.data as saveTombstone);
+    const pos = e.data as saveTombstone
+    const indexTomb = WA.state.loadVariable("tombstone") as saveTombstone[];
+    // save position tombstone in variable
+    indexTomb.push({ x: pos.x, y: pos.y });
+    WA.state.saveVariable("tombstone", indexTomb);
+    makeTombstone(pos);
   });
 };
 
