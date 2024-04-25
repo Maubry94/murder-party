@@ -217,4 +217,33 @@ const endGame = (endGameData: endGameData) => {
   });
 };
 
+function informTheRoleOfTheUserUsingBanner(tagsPlayer: string[]) {
+  let textBanner: string = "";
+  for (const tagPlayer of tagsPlayer) {
+    switch (tagPlayer) {
+      case murderRoles.murder:
+        textBanner =
+          "Vous avez le rôle " +
+          murderRoles.murder +
+          ", procéder à l'élimination de vos collègues en toute discrétion !";
+        break;
+      case murderRoles.sheriff:
+        textBanner =
+          "Vous avez le rôle " +
+          murderRoles.sheriff +
+          ", enquêter afin de débusquer vos collègues tueur.";
+        break;
+      case murderRoles.unknown:
+        textBanner =
+          "Vous avez le rôle " +
+          murderRoles.unknown +
+          ", allez chercher des indices qui vous permettront d'acquérir une arme afin de vous défendre.";
+        break;
+      default:
+        textBanner = "aucun rôle reconnu force à vous";
+        break;
+    }
+  }
+}
+
 export {};
