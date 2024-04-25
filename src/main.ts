@@ -40,6 +40,14 @@ WA.onInit()
       endGame(event.data as endGameData);
     });
 
+    WA.ui.actionBar.addButton({
+      id: "register-btn",
+      label: "end game",
+      callback: (event) => {
+        triggerEndGame("mathieu", true);
+      },
+    });
+
     // The line below bootstraps the Scripting API Extra library that adds a number of advanced properties/features to WorkAdventure
     bootstrapExtra()
       .then(() => {
@@ -132,6 +140,8 @@ const grabTouching = () => {
 
 const deleteTombstone = () => {
   const posTombs = WA.state.loadVariable("tombstone") as saveTombstone[];
+  console.log(posTombs);
+
   posTombs.forEach((tomb) => {
     WA.room.setTiles([
       {
@@ -142,8 +152,6 @@ const deleteTombstone = () => {
       },
     ]);
   });
-  // clear variable
-  WA.state.saveVariable("tombstone", []);
 };
 
 const attributRole = async () => {
