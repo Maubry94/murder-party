@@ -156,8 +156,7 @@ const attributRole = async () => {
 
 const putTombstone = () => {
   WA.event.on("puttombstone").subscribe((e) => {
-    const pos = e.data as saveTombstone;
-    makeTombstone(pos);
+    makeTombstone(e.data as saveTombstone);
   });
 };
 
