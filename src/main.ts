@@ -20,6 +20,7 @@ WA.onInit()
   .then(async () => {
     WA.state.saveVariable("tombstone", []);
     WA.state.saveVariable("countPlayer", 1);
+    playSound();
     addAndDropPlayer();
     await attributRole();
     startGame();
@@ -80,6 +81,8 @@ const killMurder = () => {
               isEnter(other.position.y - tol, other.position.y + tol, me.y)
             ) {
               other.sendEvent("murder", me);
+              playKillMurderSound();
+              other.sendEvent("playsound", "murder");
             }
           },
         });
@@ -103,10 +106,14 @@ const killSheriff = () => {
               isEnter(other.position.y - tol, other.position.y + tol, me.y)
             ) {
               other.sendEvent("sheriff", WA.player.playerId);
+              playKillSheriffSound();
+              other.sendEvent("playsound", "sheriff");
               WA.event.on("error").subscribe((event) => {
                 WA.ui.actionBar.removeButton("sheriff" as unknown as string);
                 WA.player.tags.pop();
               });
+            } else {
+              playReloadSound();
             }
           },
         });
@@ -252,6 +259,48 @@ function informTheRoleOfTheUserUsingBanner(tagsPlayer: string[]) {
         break;
     }
   }
+}
+
+const playKillMurderSound = () => {
+  const killSound = WA.sound.loadSound("../public/sounds/soundEffectMurderKill.ogg");
+  killSound.play(configSound())
+  killSound.stop()
+}
+
+const playKillSheriffSound = () => {
+  const killSound = WA.sound.loadSound("../public/sounds/soundEffectSherrifKill.ogg");
+  killSound.play(configSound());
+  killSound.stop();
+}
+
+const playReloadSound = () => {
+  const killSound = WA.sound.loadSound("../public/sounds/gun_empty.mp3");
+  killSound.play(configSound());
+  killSound.stop();
+}
+
+const playSound = () => {
+  WA.event.on("playsound").subscribe((e) => {
+    if (e.data == "murder") {
+      playKillMurderSound();
+    }
+    else if (e.data == "sheriff") {
+      playKillSheriffSound();
+    }
+  })
+}
+
+const configSound = () => {
+  var config = {
+      volume : 0.5,
+      loop : false,
+      rate : 1,
+      detune : 1,
+      delay : 0,
+      seek : 0,
+      mute : false
+  }
+  return config;
 }
 
 export {};
