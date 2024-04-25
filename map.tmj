@@ -215,6 +215,126 @@
          "y":0
         }, 
         {
+         "class":"variable",
+         "draworder":"topdown",
+         "id":63,
+         "name":"murdererGame",
+         "objects":[
+                {
+                 "height":0,
+                 "id":21,
+                 "name":"gameStatus",
+                 "properties":[
+                        {
+                         "name":"default",
+                         "type":"string",
+                         "value":""
+                        }, 
+                        {
+                         "name":"readableBy",
+                         "type":"string",
+                         "value":"admin"
+                        }, 
+                        {
+                         "name":"writableBy",
+                         "type":"string",
+                         "value":"admin"
+                        }],
+                 "rotation":0,
+                 "type":"variable",
+                 "visible":true,
+                 "width":0,
+                 "x":64,
+                 "y":0
+                }, 
+                {
+                 "height":0,
+                 "id":23,
+                 "name":"roles",
+                 "properties":[
+                        {
+                         "name":"default",
+                         "type":"object",
+                         "value":0
+                        }, 
+                        {
+                         "name":"readableBy",
+                         "type":"string",
+                         "value":"admin"
+                        }, 
+                        {
+                         "name":"writableBy",
+                         "type":"string",
+                         "value":"admin"
+                        }],
+                 "rotation":0,
+                 "type":"variable",
+                 "visible":true,
+                 "width":0,
+                 "x":0,
+                 "y":0
+                }, 
+                {
+                 "height":0,
+                 "id":22,
+                 "name":"firstConnected",
+                 "properties":[
+                        {
+                         "name":"default",
+                         "type":"string",
+                         "value":""
+                        }, 
+                        {
+                         "name":"readableBy",
+                         "type":"string",
+                         "value":"admin"
+                        }, 
+                        {
+                         "name":"writableBy",
+                         "type":"string",
+                         "value":"admin"
+                        }],
+                 "rotation":0,
+                 "type":"variable",
+                 "visible":true,
+                 "width":0,
+                 "x":32,
+                 "y":0
+                }, 
+                {
+                 "height":0,
+                 "id":24,
+                 "name":"playerCount",
+                 "properties":[
+                        {
+                         "name":"default",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"readableBy",
+                         "type":"string",
+                         "value":"admin"
+                        }, 
+                        {
+                         "name":"writableBy",
+                         "type":"string",
+                         "value":"admin"
+                        }],
+                 "rotation":0,
+                 "type":"variable",
+                 "visible":true,
+                 "width":0,
+                 "x":96,
+                 "y":0
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
          "id":52,
          "layers":[
                 {
@@ -542,8 +662,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":63,
- "nextobjectid":20,
+ "nextlayerid":65,
+ "nextobjectid":25,
  "orientation":"orthogonal",
  "properties":[
         {
