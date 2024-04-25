@@ -229,12 +229,12 @@
                          "name":"default",
                          "type":"string",
                          "value":""
-                        }, 
+                        },
                         {
                          "name":"readableBy",
                          "type":"string",
                          "value":"admin"
-                        }, 
+                        },
                         {
                          "name":"writableBy",
                          "type":"string",
@@ -246,7 +246,7 @@
                  "width":0,
                  "x":64,
                  "y":0
-                }, 
+                },
                 {
                  "height":0,
                  "id":23,
@@ -256,12 +256,12 @@
                          "name":"default",
                          "type":"object",
                          "value":0
-                        }, 
+                        },
                         {
                          "name":"readableBy",
                          "type":"string",
                          "value":"admin"
-                        }, 
+                        },
                         {
                          "name":"writableBy",
                          "type":"string",
@@ -273,7 +273,7 @@
                  "width":0,
                  "x":0,
                  "y":0
-                }, 
+                },
                 {
                  "height":0,
                  "id":22,
@@ -283,12 +283,12 @@
                          "name":"default",
                          "type":"string",
                          "value":""
-                        }, 
+                        },
                         {
                          "name":"readableBy",
                          "type":"string",
                          "value":"admin"
-                        }, 
+                        },
                         {
                          "name":"writableBy",
                          "type":"string",
@@ -300,7 +300,7 @@
                  "width":0,
                  "x":32,
                  "y":0
-                }, 
+                },
                 {
                  "height":0,
                  "id":24,
@@ -310,12 +310,12 @@
                          "name":"default",
                          "type":"int",
                          "value":0
-                        }, 
+                        },
                         {
                          "name":"readableBy",
                          "type":"string",
                          "value":"admin"
-                        }, 
+                        },
                         {
                          "name":"writableBy",
                          "type":"string",
@@ -327,7 +327,7 @@
                  "width":0,
                  "x":96,
                  "y":0
-                }, 
+                },
                 {
                  "height":0,
                  "id":25,
@@ -337,12 +337,12 @@
                          "name":"default",
                          "type":"object",
                          "value":0
-                        }, 
+                        },
                         {
                          "name":"readableBy",
                          "type":"string",
                          "value":"admin"
-                        }, 
+                        },
                         {
                          "name":"writableBy",
                          "type":"string",
@@ -360,7 +360,7 @@
          "visible":true,
          "x":0,
          "y":0
-        }, 
+        },
         {
          "id":52,
          "layers":[
@@ -689,8 +689,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":65,
- "nextobjectid":26,
+ "nextlayerid":63,
+ "nextobjectid":20,
  "orientation":"orthogonal",
  "properties":[
         {
