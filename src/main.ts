@@ -16,26 +16,22 @@ enum murderRoles {
 }
 
 WA.onInit().then(async () => {
-    // set variable tombstone position
     WA.state.saveVariable("tombstone", [])
-    // set variable count player 
-    WA.state.saveVariable("countPlayer", 0)
+    WA.state.saveVariable("countPlayer", 1)
     addAndDropPlayer()
     await attributRole()
-    makeTombstone()
+    startGame()
+    putTombstone()
     killMurder()
     killSheriff()
     grabTouching()
-    //WA.room.getTiledMap().then(console.log)
 
     WA.room.area.onEnter('clock').subscribe(() => {
         const today = new Date()
         const time = today.getHours() + ":" + today.getMinutes()
         currentPopup = WA.ui.openPopup("clockPopup", "It's " + time, [])
     })
-
     WA.room.area.onLeave('clock').subscribe(closePopup)
-
     // The line below bootstraps the Scripting API Extra library that adds a number of advanced properties/features to WorkAdventure
     bootstrapExtra().then(() => {
         console.log('Scripting API Extra ready')
@@ -53,7 +49,7 @@ function closePopup(){
 const killMurder = () => {
     const tol = 40;
     WA.player.onPlayerMove(async (me) => {
-        //console.log(me.x + " " + me.y)
+        //console.log(me.x + " " + me.y
         const players = WA.players.list()
         for (const other of players) {
             if (WA.player.tags[1] == "tueur") {
@@ -61,8 +57,8 @@ const killMurder = () => {
                     id: ("murder") as unknown as string,
                     label: "Tuer",
                     callback: (event) => {
-                        if (enter(other.position.x - tol, other.position.x + tol, me.x) &&
-                            enter(other.position.y - tol, other.position.y + tol, me.y)) {
+                        if (isEnter(other.position.x - tol, other.position.x + tol, me.x) &&
+                            isEnter(other.position.y - tol, other.position.y + tol, me.y)) {
                             other.sendEvent("murder", me)
                         }
                     },
@@ -82,8 +78,8 @@ const killSheriff = () => {
                     id: ("sheriff") as unknown as string,
                     label: "Arreter",
                     callback: (event) => {
-                        if (enter(other.position.x - tol, other.position.x + tol, me.x) &&
-                            enter(other.position.y - tol, other.position.y + tol, me.y)) {
+                        if (isEnter(other.position.x - tol, other.position.x + tol, me.x) &&
+                            isEnter(other.position.y - tol, other.position.y + tol, me.y)) {
                             other.sendEvent("sheriff", WA.player.playerId)
                             WA.event.on("error").subscribe((event) => {
                                 WA.ui.actionBar.removeButton(("sheriff") as unknown as string);
@@ -100,10 +96,12 @@ const killSheriff = () => {
 const grabTouching = () => {
     WA.event.on("murder").subscribe(() => {
         WA.player.getPosition().then((pos) => {
-            const indexTomb = WA.state.loadVariable("tombstone") as object[]
-            indexTomb.push({ x: 120, y: 120 })
+            // save position tombstone in variable
+            const indexTomb = WA.state.loadVariable("tombstone") as saveTombstone[]
+            indexTomb.push({ x: pos.x, y: pos.y })
             WA.state.saveVariable("tombstone", indexTomb)
-            WA.event.broadcast("placetombstone", { x: pos.x, y: pos.y })
+            // send event put tomb stone
+            WA.event.broadcast("puttombstone", {x: pos.x, y: pos.y})
             WA.player.teleport(100, 100)
         })
     })
@@ -125,6 +123,8 @@ const deleteTombstone = () => {
             {x: Math.round(tomb.x/32), y: Math.round(tomb.y/32), tile: null, layer: "rip"}
         ])
     })
+    // clear variable
+    WA.state.saveVariable("tombstone", [])
 }
 
 const attributRole = async () => {
@@ -135,36 +135,32 @@ const attributRole = async () => {
     }
 }
 
-const makeTombstone = () => {
-    WA.event.on("placetombstone").subscribe((event) => {
-        WA.room.setTiles([
-            // @ts-ignore
-            {x: Math.round(event.data.x/32), y: Math.round(event.data.y/32), tile: 2956, layer: "rip"}
-        ])
+const putTombstone = () => {
+    WA.event.on("puttombstone").subscribe((e) => {
+        const pos = e.data as saveTombstone
+        makeTombstone(pos)
     })
 }
 
-const enter = (min: number, max: number, value: number): boolean  => { 
-    return (value >= min && value <= max);
-}
+const makeTombstone = (tomb: saveTombstone) => (WA.room.setTiles([{x: Math.round(tomb.x/32), y: Math.round(tomb.y/32), tile: 2956, layer: "rip"}]))
+
+const isEnter = (min: number, max: number, value: number): boolean => (value >= min && value <= max)
 
 const addAndDropPlayer = () => {
     WA.players.onPlayerEnters.subscribe((p) => {
         let count = WA.state.loadVariable("countPlayer") as number
-        WA.state.saveVariable("countPlayer", count++)
+        WA.state.saveVariable("countPlayer", ++count)
     })
     WA.players.onPlayerLeaves.subscribe((p) => {
         let count = WA.state.loadVariable("countPlayer") as number
-        WA.state.saveVariable("countPlayer", count--)
+        WA.state.saveVariable("countPlayer", --count)
     })
 }
 
 const startGame = () => {
     WA.state.onVariableChange("countPlayer").subscribe((c) => {
         let count = c as number
-        if (count > 5) {
-            
-        }
+        if (count > 5) {}
     })
 }
 
