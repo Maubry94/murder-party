@@ -2,7 +2,7 @@
 
 Murder party est une expérience ludique inspirée du célèbre mode Murder de Garry's Mod. Plongez dans un univers où les innocents luttent pour leur survie tout en cherchant des à démasquer le mystérieux assassin. Pendant ce temps, le meurtrier tente habilement d'éliminer ses adversaires un par un.
 
-###### ATTENTION : Notre équipe de développement n'ayant pas eu le temps de finir de développer le mode de jeu suite à différentes problématiques ([Bug report](./bug_report.md)), nous vous proposons ici un mode défouloir ou tout le monde est meurtrier. Pour voir les autres fonctionnalités, il faut aller sur les autres branches.
+###### ATTENTION : Notre équipe de développement n'ayant pas eu le temps de finir de développer le mode de jeu suite à différentes problématiques ([Bug report](./bug_report.md)), nous vous proposons ici un mode défouloir ou tout le monde est meurtrier disponible sur [feat/mod-creazy](https://github.com/Maubry94/murder-party/tree/feat/mod-creazy). Pour voir les autres fonctionnalités, il faut aller sur les autres branches.
 
 ## Listing des fonctionnalités
 
