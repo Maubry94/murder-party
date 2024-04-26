@@ -1,39 +1,29 @@
 /// <reference types="@workadventure/iframe-api-typings" />
 
-import { RemotePlayerMoved } from "@workadventure/iframe-api-typings/play/src/front/Api/Iframe/Players/RemotePlayer";
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
-import { saveTombstone } from "./types/types";
-import { endGameData } from "./types/types";
+import { RemotePlayerInterface } from "@workadventure/iframe-api-typings";
+import { murderRoles, saveTombstone, endGameData } from "./types/types";
 
 console.log("Script started successfully");
-await WA.players.configureTracking();
 
 let currentPopup: any = undefined;
 
-enum murderRoles {
-  murder = "tueur",
-  sheriff = "policier",
-  unknown = "inconnu",
-}
-
 WA.onInit()
   .then(async () => {
+    await WA.players.configureTracking();
     WA.state.saveVariable("tombstone", []);
-    WA.state.saveVariable("countPlayer", 1);
     playSound();
-    addAndDropPlayer();
     await attributRole();
-    startGame();
     putTombstone();
-    killMurder();
-    killSheriff();
-    grabTouching();
+    murdererKill();
+    playersInteraction();
 
     WA.room.area.onEnter("clock").subscribe(() => {
       const today = new Date();
       const time = today.getHours() + ":" + today.getMinutes();
       currentPopup = WA.ui.openPopup("clockPopup", "It's " + time, []);
     });
+
     WA.room.area.onLeave("clock").subscribe(closePopup);
 
     //listening event end game
@@ -42,10 +32,10 @@ WA.onInit()
     });
 
     WA.ui.actionBar.addButton({
-      id: "register-btn",
-      label: "end game",
+      id: "clear-btn",
+      label: "Nettoyer",
       callback: (event) => {
-        triggerEndGame("mathieu", true);
+        triggerEndGame();
       },
     });
 
@@ -65,79 +55,36 @@ function closePopup() {
   }
 }
 
-const killMurder = () => {
+const murdererKill = () => {
   const tol = 40;
   WA.player.onPlayerMove(async (me) => {
-    //console.log(me.x + " " + me.y
     const players = WA.players.list();
     for (const other of players) {
-      if (WA.player.tags[1] == "tueur") {
-        WA.ui.actionBar.addButton({
-          id: "murder" as unknown as string,
-          label: "Tuer",
-          callback: (event) => {
-            if (
-              isEnter(other.position.x - tol, other.position.x + tol, me.x) &&
-              isEnter(other.position.y - tol, other.position.y + tol, me.y)
-            ) {
-              other.sendEvent("murder", me);
-              playKillMurderSound();
-              other.sendEvent("playsound", "murder");
-            }
-          },
-        });
-      }
+      WA.ui.actionBar.addButton({
+        id: "murderer" as unknown as string,
+        label: "Tuer",
+        callback: (event) => {
+          if (
+            isEnter(other.position.x - tol, other.position.x + tol, me.x) &&
+            isEnter(other.position.y - tol, other.position.y + tol, me.y)
+          ) {
+            other.sendEvent("murderer", me);
+            playmurdererKillSound();
+            other.sendEvent("playsound", "murderer");
+          }
+        },
+      });
     }
   });
 }
 
-const killSheriff = () => {
-  const tol = 100;
-  WA.player.onPlayerMove(async (me) => {
-    const players = WA.players.list();
-    for (const other of players) {
-      if (WA.player.tags[1] == "policier") {
-        WA.ui.actionBar.addButton({
-          id: "sheriff" as unknown as string,
-          label: "Arreter",
-          callback: (event) => {
-            if (
-              isEnter(other.position.x - tol, other.position.x + tol, me.x) &&
-              isEnter(other.position.y - tol, other.position.y + tol, me.y)
-            ) {
-              other.sendEvent("sheriff", WA.player.playerId);
-              playKillSheriffSound();
-              other.sendEvent("playsound", "sheriff");
-              WA.event.on("error").subscribe((event) => {
-                WA.ui.actionBar.removeButton("sheriff" as unknown as string);
-                WA.player.tags.pop();
-              });
-            } else {
-              playReloadSound();
-            }
-          },
-        });
-      }
-    }
-  });
-}
-
-const grabTouching = () => {
-  WA.event.on("murder").subscribe(() => {
+const playersInteraction = () => {
+  WA.event.on("murderer").subscribe(() => {
     WA.player.getPosition().then((pos) => {
-      // send event put tomb stone
+      // send event to put tomb stone
       WA.event.broadcast("puttombstone", { x: pos.x, y: pos.y });
       WA.player.teleport(100, 100);
     });
-  });
-  WA.event.on("sheriff").subscribe((event) => {
-    if (WA.player.tags[1] == "tueur") {
-      console.log("stop game");
-    } else {
-      // @ts-ignore
-      let error = WA.players.get(event.data);
-      error?.sendEvent("error", true); 
-    }
   });
 };
 
@@ -157,11 +104,7 @@ const deleteTombstone = () => {
 };
 
 const attributRole = async () => {
-  if (WA.player.playerId % 2) {
-    WA.player.tags.push(murderRoles.murder);
-  } else {
-    WA.player.tags.push(murderRoles.sheriff);
-  }
+  WA.player.tags.push(murderRoles.murderer);
 };
 
 const putTombstone = () => {
@@ -188,32 +131,10 @@ const makeTombstone = (tomb: saveTombstone) =>
 const isEnter = (min: number, max: number, value: number): boolean =>
   value >= min && value <= max;
 
-const addAndDropPlayer = () => {
-  WA.players.onPlayerEnters.subscribe((p) => {
-    let count = WA.state.loadVariable("countPlayer") as number;
-    WA.state.saveVariable("countPlayer", ++count);
-  });
-  WA.players.onPlayerLeaves.subscribe((p) => {
-    let count = WA.state.loadVariable("countPlayer") as number;
-    WA.state.saveVariable("countPlayer", --count);
-  });
-};
-
-const startGame = () => {
-  WA.state.onVariableChange("countPlayer").subscribe((c) => {
-    let count = c as number;
-    if (count > 5) {
-    }
-  });
-};
-
-const triggerEndGame = (winnerName: string, murderWin: boolean) => {
-  let position = { x: 500, y: 500 };
+const triggerEndGame = () => {
+  let position = { x: 130, y: 130 };
   let endGameData = {
     positionTp: position,
-    labelWinner: murderWin
-      ? "Le tueur " + winnerName + "a gagné la partie !"
-      : "Le tueur a été arrêté, les villageois ont gagné !",
   };
 
   WA.event.broadcast("event-end-game", endGameData);
@@ -222,78 +143,17 @@ const triggerEndGame = (winnerName: string, murderWin: boolean) => {
 const endGame = (endGameData: endGameData) => {
   deleteTombstone();
   WA.player.teleport(endGameData.positionTp.x, endGameData.positionTp.y);
-  WA.ui.banner.openBanner({
-    id: "banner-info-end-game",
-    text: endGameData.labelWinner,
-    bgColor: "#000000",
-    textColor: "#ffffff",
-    closable: true,
-    timeToClose: 0,
-  });
 };
 
-function informTheRoleOfTheUserUsingBanner(tagsPlayer: string[]) {
-  let text: string = "";
-  let isMurder = false;
-  for (const tagPlayer of tagsPlayer) {
-    switch (tagPlayer) {
-      case murderRoles.murder:
-        text =
-          "Vous avez le rôle " +
-          murderRoles.murder +
-          ", procéder à l'élimination de vos collègues en toute discrétion !";
-        isMurder = true;
-        break;
-      case murderRoles.sheriff:
-        text =
-          "Vous avez le rôle " +
-          murderRoles.sheriff +
-          ", enquêter afin de débusquer vos collègues tueur.";
-        break;
-      case murderRoles.unknown:
-        text =
-          "Vous avez le rôle " +
-          murderRoles.unknown +
-          ", allez chercher des indices qui vous permettront d'acquérir une arme afin de vous défendre.";
-        break;
-      default:
-        text = "aucun rôle reconnu force à vous";
-        break;
-    }
-  }
-
-  WA.ui.displayActionMessage({
-    message: text + " (SPACE) to close.",
-    callback: () => {},
-  });
-}
-
-const playKillMurderSound = () => {
-  const killSound = WA.sound.loadSound("../public/sounds/soundEffectMurderKill.ogg");
+const playmurdererKillSound = () => {
+  const killSound = WA.sound.loadSound("/public/sounds/murdererKill.ogg");
   killSound.play(configSound())
   killSound.stop()
 }
 
-const playKillSheriffSound = () => {
-  const killSound = WA.sound.loadSound("../public/sounds/soundEffectSherrifKill.ogg");
-  killSound.play(configSound());
-  killSound.stop();
-}
-
-const playReloadSound = () => {
-  const killSound = WA.sound.loadSound("../public/sounds/gun_empty.mp3");
-  killSound.play(configSound());
-  killSound.stop();
-}
-
 const playSound = () => {
-  WA.event.on("playsound").subscribe((e) => {
-    if (e.data == "murder") {
-      playKillMurderSound();
-    }
-    else if (e.data == "sheriff") {
-      playKillSheriffSound();
-    }
+  WA.event.on("playsound").subscribe((event) => {
+    playmurdererKillSound();
   })
 }
 
@@ -310,4 +170,11 @@ const configSound = () => {
   return config;
 }
 
+const countPlayerIterator = (iterPlayer: IterableIterator<RemotePlayerInterface>) => {
+  let count: number = 0;
+  for (const player of iterPlayer) {
+    count++
+  }
+  return count;
+}
 export {};

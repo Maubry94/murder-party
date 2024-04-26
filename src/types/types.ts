@@ -1,3 +1,7 @@
+export enum murderRoles {
+  murderer = "murderer",
+}
+
 export type saveTombstone = {
   x: number;
   y: number;
