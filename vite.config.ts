@@ -27,6 +27,7 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 index: "./index.html",
+                popup: "./modals/StartAnnouncement.html",
                 ...getMapsScripts(maps),
             },
         },
