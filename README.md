@@ -9,7 +9,7 @@ Murder party est une expérience ludique inspirée du célèbre mode Murder de G
 * Gestion de l'état du jeu - Gauthier LO, Matthieu AUBRY
 * Conception du gameplay - William FLORENTIN
 * Administration des notifications - Mathieu PANNETRAT
-* Ajustement de la carte du jeu - Matthieu AUBRY (Aucun designer assigné)
+* Ajustement de la carte du jeu - Mathieu PANNETRAT, Matthieu AUBRY (Aucun designer assigné)
 * Conception sonore - Mathieu PANNETRAT, Matthieu AUBRY
 
 Gauthier LO ==> [UaltarH](https://github.com/UaltarH)

@@ -146,7 +146,7 @@ const endGame = (endGameData: endGameData) => {
 };
 
 const playmurdererKillSound = () => {
-  const killSound = WA.sound.loadSound("/public/sounds/murdererKill.ogg");
+  const killSound = WA.sound.loadSound("/sounds/murdererKill.ogg");
   killSound.play(configSound())
   killSound.stop()
 }
